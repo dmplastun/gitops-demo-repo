@@ -36,7 +36,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:https
 ```bash
 argocd login localhost:8080 --insecure
 ```
-# Используйте логин "admin" и пароль из:
+### Используйте логин "admin" и пароль из:
 ```
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
