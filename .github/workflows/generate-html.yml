@@ -19,7 +19,7 @@ jobs:
 
       - name: Convert README.md to index.html
         run: |
-          pandoc README.md -o index.html --standalone --self-contained
+          pandoc README.md -o index.html --self-contained
 
       - name: Commit and Push HTML
         uses: stefanzweifel/git-auto-commit-action@v4
