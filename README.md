@@ -53,15 +53,15 @@ argocd app create my-app \
 ```
 5. Через UI ArgoCD
 
-    Перейдите по ссылке: https://localhost:8080
-    Нажмите + New App
-    Укажите:
-        Repository URL — https://github.com/<ваш-логин>/gitops-demo-repo.git
-        Path — charts/my-app
-        Cluster URL — https://kubernetes.default.svc
-        Namespace — default
-        Sync Policy — ✅ Automated
-    Нажмите Create → Sync
+    Перейдите по ссылке: https://localhost:8080 \
+    Нажмите + New App \
+    Укажите: \
+        Repository URL — https://github.com/<ваш-логин>/gitops-demo-repo.git \
+        Path — charts/my-app \
+        Cluster URL — https://kubernetes.default.svc \
+        Namespace — default \
+        Sync Policy — ✅ Automated \ 
+    Нажмите Create → Sync \
 
 ### 🔁 Автоматическая синхронизация
 
