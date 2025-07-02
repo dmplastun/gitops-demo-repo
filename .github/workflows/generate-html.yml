@@ -1,7 +1,9 @@
-name: Generate HTML from README
+name: Update index.html from README.md
 
 on:
   push:
+    paths:
+      - 'README.md'
     branches:
       - main
 
@@ -17,7 +19,7 @@ jobs:
 
       - name: Convert README.md to index.html
         run: |
-          pandoc README.md -o index.html --standalone --metadata title="GitOps Project"
+          pandoc README.md -o index.html --standalone --self-contained
 
       - name: Commit and Push HTML
         uses: stefanzweifel/git-auto-commit-action@v4
