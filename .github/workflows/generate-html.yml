@@ -1,0 +1,26 @@
+name: Generate HTML from README
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Pandoc
+        run: sudo apt-get install -y pandoc
+
+      - name: Convert README.md to index.html
+        run: |
+          pandoc README.md -o index.html --standalone --metadata title="GitOps Project"
+
+      - name: Commit and Push HTML
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "docs: update index.html"
+          file_pattern: index.html
