@@ -120,4 +120,4 @@ kubectl logs -n argocd
 
 📧 dmitrij.plastun@gmail.com
 
-🔗 https://github.com/dmplastun/gitops-demo-repo
+🔗 https://dmplastun.github.io/gitops-demo-repo/
