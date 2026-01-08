@@ -124,9 +124,11 @@ invalid chart path        → Ensure Chart.yaml exists
     Change history: Track and rollback versions
 
     Scalability: Add apps and environments (dev/staging/prod)
-
-###🙌 Author
+---
+### 🙌 Author
 
 🪪 dmplastun
+
 📧 dmitrij.plastun@gmail.com
+
 🔗 https://dmplastun.github.io/gitops-demo-repo/
