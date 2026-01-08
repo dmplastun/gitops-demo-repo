@@ -1,123 +1,132 @@
+## 📘 GitOps Project with ArgoCD and Helm
 
-## 📘 Проект GitOps с ArgoCD и Helm
+This repository contains Infrastructure as Code (IaC) and application configurations for automated Kubernetes deployments using the GitOps approach with ArgoCD and Helm charts.
+## 📌 Overview
 
-Описание проекта: Этот репозиторий содержит инфраструктуру как код (Infrastructure as Code) и конфигурации приложения, необходимые для автоматического развертывания в Kubernetes с использованием GitOps подхода через ArgoCD и Helm чартов.
-## 📌 Обзор
+    Type: GitOps
 
-Тип проекта: GitOps
-Оркестратор: Kubernetes
-Инструмент: GitOps ArgoCD
-Метод управления манифестами: Helm
-Цель: Автоматическое развертывание и синхронизация состояния кластера из Git репозитория
-## 🧩 Структура проекта
+    Orchestrator: Kubernetes
+
+    Tool: ArgoCD
+
+    Manifest Management: Helm
+
+    Goal: Automatic cluster deployment and synchronization from Git repository
+
+## 🧩 Project Structure
 
 ```
-my-app/                # Пример Helm-чарта
-  ├── Chart.yaml         # Описание чарта
-  ├── values.yaml        # Конфигурационные параметры
-  └── templates/         # Шаблоны Kubernetes манифестов
+my-app/                # Sample Helm chart
+  ├── Chart.yaml         # Chart metadata
+  ├── values.yaml        # Configuration values
+  └── templates/         # Kubernetes manifest templates
       ├── deployment.yaml
       └── service.yaml
 ```
-## 🚀 Как использовать
-1. Установка Minikube (локальный кластер)
-```bash
+## 🚀 How to Use
+
+###1. Install Minikube (local cluster)
+```
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 minikube start --driver=docker
 ```
-2. Установка ArgoCD
-```bash
+### 2. Install ArgoCD
+```
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.4/manifests/install.yaml
-kubectl port-forward svc/argocd-server -n argocd 8080:https
+kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
-3. Авторизация в ArgoCD
-```bash
+### 3. Login to ArgoCD
+```
 argocd login localhost:8080 --insecure
 ```
-### Используйте логин "admin" и пароль из:
+Use username: admin
+Get password:
 ```
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
-4. Создание приложения в ArgoCD (через CLI)
-```bash
+### 4. Create Application via CLI
+```
 argocd app create my-app \
-  --repo https://github.com/<ваш-логин>/gitops-demo-repo.git  \
+  --repo https://github.com/<your-username>/gitops-demo-repo.git \
   --path charts/my-app \
-  --dest-server https://kubernetes.default.svc  \
+  --dest-server https://kubernetes.default.svc \
   --dest-namespace default \
   --helm-chart my-app \
   --auto-prune \
   --sync-policy automated
 ```
-5. Через UI ArgoCD
+### 5. Via ArgoCD UI
 ```
-    Перейдите по ссылке: https://localhost:8080
-    Нажмите + New App
-    Укажите:
-        Repository URL — https://github.com/<ваш-логин>/gitops-demo-repo.git
-        Path — charts/my-app \
-        Cluster URL — https://kubernetes.default.svc
-        Namespace — default
-        Sync Policy — ✅ Automated 
-    Нажмите Create → Sync
+Visit: https://localhost:8080
+Click + New App
+Configure:
+    Repository URL: https://github.com/<your-username>/gitops-demo-repo.git
+    Path: charts/my-app
+    Cluster URL: https://kubernetes.default.svc
+    Namespace: default
+    Sync Policy: ✅ Automated
+Click Create → Sync
 ```
-### 🔁 Автоматическая синхронизация
+### 🔁 Automatic Synchronization
 
-Любые изменения в репозитории будут автоматически применены в кластере:
+Any repository changes will be automatically applied:
 ```
 git add .
 git commit -m "Update config"
 git push origin main
 ```
-ArgoCD обнаружит изменения и выполнит синхронизацию.
+ArgoCD detects changes and syncs automatically.
 
-### 🛡️ Self-healing
+###🛡️ Self-healing
 
-Если состояние кластера будет изменено вручную, например:
+Manual cluster changes are reverted:
 ```
 kubectl scale deployment my-app --replicas=5
 ```
-ArgoCD восстановит исходное состояние, соответствующее описанию в репозитории.
-### 🔐 Безопасность
+ArgoCD restores desired Git state.
 
-Смените начальный пароль администратора:
+### 🔐 Security
+
+Change default admin password:
 ```
 argocd account update-password
 ```
-Для приватных репозиториев настройте SSH-ключ:
+For private repos, configure SSH key:
 ```
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ```
-Добавьте публичный ключ (~/.ssh/id_rsa.pub) в ArgoCD → Settings → Repositories
+Add public key (~/.ssh/id_rsa.pub) in ArgoCD → Settings → Repositories
 
-#### 📊 Мониторинг и устранение ошибок
-Полезные команды:
+###📊 Monitoring & Troubleshooting
+
+Useful commands:
 ```
 argocd app list
 argocd app get my-app
 argocd app sync my-app
 argocd app history my-app
-kubectl logs -n argocd 
+kubectl logs -n argocd
 ```
-Возможные ошибки:
+Common issues:
 ```
-    repository not accessible	- Нет доступа к репозиторию	Проверьте права и тип репозитория 
-    comparison error - Конфликт между кластером и Git	Выполните синхронизацию или проверьте манифесты 
-    invalid chart path - Неверный путь до Helm чарта	Убедитесь, что структура корректна и есть Chart.yaml
+repository not accessible  → Check repo access rights
+comparison error          → Run sync or verify manifests
+invalid chart path        → Ensure Chart.yaml exists
 ```
-### ✅ Что вы получаете
+### ✅ What You Get
 
-    Автоматизация деплоя: любое изменение в репозитории применяется в кластере.
-    Self-healing: кластер всегда находится в состоянии, определённом в Git.
-    История изменений: легко отслеживать и восстанавливать предыдущие версии.
-    Простота масштабирования: можно добавлять новые приложения и среды (dev/staging/prod).
+    Automated deployments: Git changes → cluster updates
 
-### 🙌 Автор
+    Self-healing: Cluster matches Git state
+
+    Change history: Track and rollback versions
+
+    Scalability: Add apps and environments (dev/staging/prod)
+
+###🙌 Author
 
 🪪 dmplastun
-
 📧 dmitrij.plastun@gmail.com
-
 🔗 https://dmplastun.github.io/gitops-demo-repo/
